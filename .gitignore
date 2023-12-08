@@ -1,0 +1,11 @@
+# Build files
+*__pycache__*
+build
+
+# Output files
+logs
+
+# Config files
+courses.yaml
+credentials.ini
+aes.key
