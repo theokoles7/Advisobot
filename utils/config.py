@@ -15,7 +15,8 @@ class Config():
 
         # Parse and store credentials & courses
         self.__credentials =    self.parse_credentials()
-        self.__courses =        self.parse_courses()
+        self.__courses =        self.parse_yaml(ARGS.courses_path)
+        self.__drivers =        self.parse_yaml(ARGS.drivers_path)
 
     def get_clid(self) -> str:
         """Provide CLID from credentials.
@@ -33,6 +34,17 @@ class Config():
         """
         return self.__courses
     
+    def get_driver(self, driver: str) -> str:
+        """Provide dictionary of driver paths.
+
+        Args:
+            driver (str): Browser driver being requested (chrome/firefox)
+
+        Returns:
+            str: Driver path
+        """
+        return self.__drivers[driver]
+    
     def get_pswd(self) -> str:
         """Provide password from credentials.
 
@@ -41,21 +53,24 @@ class Config():
         """
         return self.__credentials['pswd']
     
-    def parse_courses(self) -> dict:
+    def parse_yaml(self, path: str) -> dict:
         """Parse courses.yaml file.
+
+        Args:
+            path (str): Path to YAML file
 
         Returns:
             dict: Dictionary format of courses
         """
         try:
             # Open courses.yaml
-            with open(ARGS.courses_path, 'r') as file_in:
+            with open(path, 'r') as file_in:
 
                 # Initialize parser & read file
                 return dict(yaml.safe_load(file_in))
 
         except FileNotFoundError:
-            raise FileNotFoundError(f"{ARGS.courses_path} not found. Please ensure there exists an .yaml file containing course choices.")
+            raise FileNotFoundError(f"{path} not found. Please ensure there exists an .yaml file containing course choices.")
 
     def parse_credentials(self) -> dict:
         """Parse credential.ini file.

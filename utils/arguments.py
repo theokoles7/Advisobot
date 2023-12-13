@@ -14,6 +14,14 @@ parser = argparse.ArgumentParser(
 config =            parser.add_argument_group("config")
 
 config.add_argument(
+    "--browser",
+    type =          str,
+    choices =       ["chrome", "firefox"],
+    default =       "firefox",
+    help =          "Choice of browser"
+)
+
+config.add_argument(
     "--credentials_path",
     type =          str,
     default =       "./conf/credentials.ini",
