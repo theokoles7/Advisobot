@@ -1,0 +1,2 @@
+chrome: ./conf/drivers/chromedriver
+firefox: ./conf/drivers/geckodriver
