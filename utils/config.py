@@ -53,6 +53,14 @@ class Config():
         """
         return self.__credentials['pswd']
     
+    def get_term(self) -> str:
+        """Provide term specified.
+
+        Returns:
+            str: String format of term
+        """
+        return self.__courses['term']
+    
     def parse_yaml(self, path: str) -> dict:
         """Parse courses.yaml file.
 

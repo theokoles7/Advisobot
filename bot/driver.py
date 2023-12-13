@@ -27,6 +27,20 @@ class BotDriver(webdriver.Firefox if ARGS.browser == 'firefox' else webdriver.Ch
             )
         )
 
+    def click_by_id(self, id: str) -> None:
+        """Click element located by xpath.
+
+        Args:
+            id (str): ID of element
+        """
+        try:
+            WebDriverWait(self, 10).until(
+                EC.presence_of_element_located((By.ID, id))
+            ).click()
+
+        except Exception as e:
+            self.logger.error(f"An error occured: {e}")
+
     def click_by_xpath(self, xpath: str) -> None:
         """Click element located by xpath.
 

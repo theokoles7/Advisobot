@@ -11,7 +11,7 @@ try:
     CONFIG = Config()
 
     # Register courses provided
-    register_courses(CONFIG.get_courses())
+    register_courses(CONFIG.get_courses(), CONFIG.get_term())
 
 except Exception as e:
     # Report any wildcard errors
