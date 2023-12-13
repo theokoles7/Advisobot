@@ -5,7 +5,9 @@ import os
 from selenium                           import webdriver
 from selenium.webdriver.common.by       import By
 from selenium.webdriver.support.wait    import WebDriverWait
-from selenium.webdriver.support         import expected_conditions as EC
+from selenium.webdriver.support         import expected_conditions  as EC
+from selenium.webdriver.chrome.service  import Service              as firefox_service
+from selenium.webdriver.firefox.service import Service              as chrome_service
 
 from utils      import ARGS, LOGGER, Config
 
@@ -18,8 +20,11 @@ class BotDriver(webdriver.Firefox if ARGS.browser == 'firefox' else webdriver.Ch
     def __init__(self):
         """Initialize bot webdriver object."""
         super().__init__(
-            executable_path =   self.config.get_driver(ARGS.browser),
-            service_log_path =  os.devnull
+            service =   (
+                chrome_service(self.config.get_driver(ARGS.browser)) 
+                if ARGS.browser == 'chrome' 
+                else firefox_service(self.config.get_driver(ARGS.browser))
+            )
         )
 
     def click_by_xpath(self, xpath: str) -> None:
@@ -60,7 +65,7 @@ class BotDriver(webdriver.Firefox if ARGS.browser == 'firefox' else webdriver.Ch
     def kill(self) -> None:
         """Close and quit webdriver."""
         # Close browser window and quit process
-        self.logger.info("Exiting...")
+        self.logger.info("Killing driver...")
         self.close()
         self.quit()
 
@@ -113,15 +118,3 @@ class BotDriver(webdriver.Firefox if ARGS.browser == 'firefox' else webdriver.Ch
 
         except Exception as e:
             self.logger.error(f"An error occured: {e}")
-
-if __name__ == '__main__':
-
-    driver = BotDriver()
-
-    try:
-        driver.login()
-
-        driver.logout()
-
-    finally:
-        driver.kill()

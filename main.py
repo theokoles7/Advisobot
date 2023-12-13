@@ -1,5 +1,6 @@
 """Drive advisobot application."""
 
+from bot    import register_courses
 from utils  import BANNER, Config, LOGGER
 
 try:
@@ -8,6 +9,9 @@ try:
 
     # Read in configuration files
     CONFIG = Config()
+
+    # Register courses provided
+    register_courses(CONFIG.get_courses())
 
 except Exception as e:
     # Report any wildcard errors

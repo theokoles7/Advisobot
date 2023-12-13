@@ -21,7 +21,6 @@ dependencies:
   - python=3.11.5=h955ad1f_0
   - pyyaml=6.0.1=py311h5eee18b_0
   - readline=8.2=h5eee18b_0
-  - selenium=3.141.0=py311h5eee18b_1000
   - setuptools=68.0.0=py311h06a4308_0
   - sqlite=3.41.2=h5eee18b_0
   - tk=8.6.12=h1ccaba5_0
@@ -33,7 +32,19 @@ dependencies:
   - zlib=1.2.13=h5eee18b_0
   - pip:
       - advisobot==1.0.0
+      - attrs==23.1.0
+      - charset-normalizer==3.3.2
       - configparser-crypt==1.1.0
       - cryptidy==1.2.2
+      - h11==0.14.0
+      - idna==3.6
+      - outcome==1.3.0.post0
       - pycryptodomex==3.19.0
+      - requests==2.31.0
+      - selenium==4.16.0
+      - sniffio==1.3.0
+      - sortedcontainers==2.4.0
+      - trio==0.23.1
+      - trio-websocket==0.11.1
+      - wsproto==1.2.0
 prefix: /home/theokoles/miniconda3/envs/advisobot
