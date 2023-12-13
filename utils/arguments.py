@@ -28,6 +28,13 @@ config.add_argument(
 )
 
 config.add_argument(
+    "--drivers_path",
+    type =          str,
+    default =       "./conf/drivers.yaml",
+    help =          "Path to drivers file. Defaults to \'./conf/drivers.yaml\'"
+)
+
+config.add_argument(
     "--config_key",
     type =          str,
     default =       "./conf/aes.key",
