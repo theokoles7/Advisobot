@@ -1,7 +1,7 @@
 """Drive advisobot application."""
 
-from bot    import register_courses
-from utils  import BANNER, Config, LOGGER
+from bot    import register_courses, register_plan
+from utils  import ARGS, BANNER, Config, LOGGER
 
 try:
     # Initiate logging with banner
@@ -10,8 +10,18 @@ try:
     # Read in configuration files
     CONFIG = Config()
 
-    # Register courses provided
-    register_courses(CONFIG.get_courses(), CONFIG.get_term())
+    # Match action
+    match ARGS.action:
+
+        case "register":
+
+            # Match axis
+            match ARGS.axis:
+
+                case "courses": register_courses(CONFIG.get_courses(), CONFIG.get_term())
+
+                case "plan":    register_plan(ARGS.plan_name, CONFIG.get_term())
+    
 
 except Exception as e:
     # Report any wildcard errors
