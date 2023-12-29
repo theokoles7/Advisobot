@@ -94,6 +94,12 @@ courses = axis.add_parser(
     description =   "Register from courses list"
 )
 
+# CRNS _________________
+crns = axis.add_parser(
+    "crns",
+    description =   "Register from list of CRNs"
+)
+
 # PLANS
 plans = axis.add_parser(
     "plan",
@@ -104,6 +110,47 @@ plans.add_argument(
     "plan_name",
     type =          str,
     help =          "Plan name"
+)
+
+# VERIFY ----------------------------------------
+verify = actions.add_parser(
+    "verify",
+    description =   "Verify registration configuration"
+)
+
+targets = verify.add_subparsers(
+    dest =          "target"
+)
+
+targets.add_parser(
+    "credentials",
+    help =          "Verify credentials"
+)
+
+targets.add_parser(
+    "term",
+    help =          "Verify term"
+)
+
+targets.add_parser(
+    "courses",
+    help =          "Verify courses"
+)
+
+plan = targets.add_parser(
+    "plan",
+    help =          "Verify plan"
+)
+
+plan.add_argument(
+    "plan_name",
+    type =          str,
+    help =          "Plan name"
+)
+
+targets.add_parser(
+    "crns",
+    help =          "Verify CRNs"
 )
 
 ###################################################################################################

@@ -13,6 +13,8 @@ driver =    BotDriver()
 # Initialize registrat logger
 logger = LOGGER.getChild('registrar')
 
+# REGISTRATION ====================================================================================
+
 def register_courses(courses: dict, term: str) -> None:
     """Register provided list of courses.
 
@@ -27,18 +29,23 @@ def register_courses(courses: dict, term: str) -> None:
         # Access registration dashboard
         driver.access_registration_dashboard(term)
 
+        print(courses)
+
         # Register courses
-        for course in courses:
+        for course, info in courses.items():
+
+            # Ensure required information is present
+            if any(item == None for item in info.values()):
+                raise ValueError(f"Course expected to have name, number, and section, got {course}:{info}")
 
             # Extract individual course information
-            course = courses[course]
-            logger.info(f"Registering for {course['subject']} {course['number']} ({course['crn']})")
+            logger.info(f"Registering for {info['subject']} {info['number']}, Section {info['section']}")
 
             # Enter subject & course number and click "Search"
             driver.clear_subject_input()
-            driver.send_keys_by_id("s2id_autogen5", course['subject'])
+            driver.send_keys_by_id("s2id_autogen5", info['subject'])
             driver.send_keys_by_id("s2id_autogen5", Keys.ENTER, wait=1)
-            driver.send_keys_by_id("txt_courseNumber", course['number'], clear_first=True)
+            driver.send_keys_by_id("txt_courseNumber", info['number'], clear_first=True)
             driver.click_by_id("search-go")
 
             # Return to course search
@@ -50,6 +57,27 @@ def register_courses(courses: dict, term: str) -> None:
     except Exception as e:
         # Report errors
         logger.error(f"An error occurred: {e}")
+        traceback.print_exc()
+
+    finally:
+        # Kill driver
+        driver.kill()
+
+
+def register_crns(crns: list, term: str) -> None:
+    """Register by CRNs.
+
+    Args:
+        crns (list): List of CRNs
+        term (str): Term for which courses will be registered
+    """
+    try:
+        logger.info(f"CRNs: {crns}")
+
+    except Exception as e:
+        # Report errors
+        logger.error(f"An error occured during CRN registration: {e}")
+        traceback.print_exc()
 
     finally:
         # Kill driver
@@ -129,5 +157,80 @@ def report_summary() -> None:
                 f" {course['status']:15} |"
             )
             logger.info("+" + ("-"*112) + "+")
+
     except Exception as e:
         logger.error(f"Error occured while producing summary report: {e}")
+        traceback.print_exc()
+
+# VERIFICATION ====================================================================================
+        
+def verify(target: str, term: str = None, courses: dict = None, plan_name: str = None) -> None:
+    """Verify credentials, term, 
+
+    Args:
+        target (list): Verification target
+        term (str): Term for which courses will be registered for
+        courses (dict): Dictionary list of courses
+        plan_name (str): Plan name
+        crns (list): List of CRNs
+    """
+    logger.info(f"Verifying: {target}")
+    try:
+        # Log into ULink
+        if driver.login() and target == 'credentials':
+            logger.info("Credentials verified")
+
+        # Access registration dashboard
+        driver.access_registration_dashboard(term)
+
+        if target == 'term':
+            logger.info("Term verified")
+
+        # Match target:
+        match target:
+
+            case 'courses':
+                for course, info in courses.items():
+
+                    # Ensure required information is present
+                    if any(item == None for item in info.values()):
+                        raise ValueError(f"Course expected to have name, number, and section, got {course}:{info}")
+
+                    # Enter subject & course number and click "Search"
+                    driver.clear_subject_input()
+                    driver.send_keys_by_id("s2id_autogen5", info['subject'])
+                    driver.send_keys_by_id("s2id_autogen5", Keys.ENTER, wait=1)
+                    driver.send_keys_by_id("txt_courseNumber", info['number'], clear_first=True)
+                    driver.click_by_id("search-go")
+
+                    # Locate specified section number
+                    if driver.xpath_is_present(f"//table[@id=\'table1\']/tbody/tr/td[contains(text(), {info['section']})]"):
+                        logger.info(f"Course verified: {course, info}")
+
+                    # Return to course search
+                    driver.click_by_id("search-again-button")
+
+            case 'plan':
+
+                # Switch to "Plans" tab
+                driver.click_by_id("loadPlans-tab")
+
+                # Ensure specified plan exists and click "Add All"
+                if driver.xpath_is_present(f"//span[contains(text(), \'Plan: {plan_name}\')]"):
+
+                    logger.info(f"Plan verified: {plan_name}")
+
+                else:
+                    raise ValueError(f"{plan_name} does not exist in user's plans list")
+
+            case 'crns':
+                raise NotImplementedError("Verification of CRNs not yet implemented")
+
+    except Exception as e:
+        # Report errors
+        logger.error(f"An error occured during verification: {e}")
+        traceback.print_exc()
+
+    finally:
+        # Kill driver
+        driver.kill()

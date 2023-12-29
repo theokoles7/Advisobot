@@ -34,16 +34,20 @@ class BotDriver(webdriver.Firefox if ARGS.browser == 'firefox' else webdriver.Ch
         Args:
             term (str): Term for which courses will be registered
         """
-        # Navigate to "Registration"
-        self.get("https://reg-prod.ec.louisiana.edu/StudentRegistrationSsb/ssb/registration")
+        try:
+            # Navigate to "Registration"
+            self.get("https://reg-prod.ec.louisiana.edu/StudentRegistrationSsb/ssb/registration")
 
-        # Click "Register for Classes"
-        self.click_by_id("registerLink")
+            # Click "Register for Classes"
+            self.click_by_id("registerLink")
 
-        # Open drop down and select term
-        self.click_by_id("s2id_txt_term")
-        self.click_by_xpath(f"//div[contains(text(), \'{term}\')]")
-        self.click_by_id("term-go")
+            # Open drop down and select term
+            self.click_by_id("s2id_txt_term")
+            self.click_by_xpath(f"//div[contains(text(), \'{term}\')]")
+            self.click_by_id("term-go")
+
+        except Exception:
+            raise ValueError(f"{term} does not appear to be a valid term")
 
     def check_for_errors(self) -> list:
         """Get list of errors present.
@@ -159,8 +163,12 @@ class BotDriver(webdriver.Firefox if ARGS.browser == 'firefox' else webdriver.Ch
         self.close()
         self.quit()
 
-    def login(self) -> None:
-        """Log into ULink."""
+    def login(self) -> bool:
+        """Log into ULink.
+
+        Returns:
+            bool: True on authentication, False otherwise
+        """
         self.logger.info("Logging into ULink")
 
         # Navigate to ULink
@@ -180,6 +188,7 @@ class BotDriver(webdriver.Firefox if ARGS.browser == 'firefox' else webdriver.Ch
 
         # Report success
         self.logger.info("Login successful")
+        return True
 
     def logout(self) -> None:
         """Logout of ULink."""
