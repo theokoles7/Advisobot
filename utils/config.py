@@ -32,7 +32,15 @@ class Config():
         Returns:
             dict: Dictionary format of courses
         """
-        return self.__courses
+        return self.__courses['courses']
+    
+    def get_crns(self) -> list:
+        """Provide list of CRNs.
+
+        Returns:
+            dict: List of CRNs
+        """
+        return self.__courses['crns']
     
     def get_driver(self, driver: str) -> str:
         """Provide dictionary of driver paths.
