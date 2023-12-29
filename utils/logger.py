@@ -1,6 +1,6 @@
 """Logging utilities."""
 
-import datetime, logging, os, sys
+import logging, os, sys
 
 from utils.arguments    import ARGS
 
@@ -20,7 +20,7 @@ stdout_handler.setFormatter(logging.Formatter('%(asctime)s | %(levelname)s | %(n
 LOGGER.addHandler(stdout_handler)
 
 # Define file handler
-file_handler =      logging.FileHandler(f"{ARGS.logging_path}/advisobot_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.log")
+file_handler =      logging.FileHandler(f"{ARGS.logging_path}/advisobot_{ARGS.action}.log")
 file_handler.setLevel(ARGS.logging_level)
 file_handler.setFormatter(logging.Formatter('%(asctime)s | %(levelname)s | %(name)s | %(message)s'))
 LOGGER.addHandler(file_handler)
