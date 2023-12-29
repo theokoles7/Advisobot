@@ -10,3 +10,4 @@ logs
 courses.yaml
 credentials.ini
 aes.key
+drivers.yaml
